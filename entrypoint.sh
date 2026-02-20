@@ -60,8 +60,10 @@ if [ "$OUTPUT_FORMAT" = "ts" ]; then
     mv "$LATEST_TS" "$OUTPUT_PATH"
 elif [ "$OUTPUT_FORMAT" = "webm" ]; then
     ffmpeg -i "$LATEST_TS" -c:v libvpx-vp9 -crf 30 -b:v 0 -c:a libopus "$OUTPUT_PATH"
-else
+elif [ "$OUTPUT_FORMAT" = "mp4" ]; then
     ffmpeg -i "$LATEST_TS" -c:v copy -c:a copy "$OUTPUT_PATH"
+else
+    ffmpeg -i "$LATEST_TS" "$OUTPUT_PATH"
 fi
 CONVERSION_EXIT_CODE=$?
 set -e
