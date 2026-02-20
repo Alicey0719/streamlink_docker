@@ -1,0 +1,12 @@
+services:
+  streamlink:
+    container_name: streamlink
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    # image: alicey/streamlink:latest
+    volumes: 
+      - ./data:/data
+    command: ['https://www.youtube.com/watch?v=_9kz1spS69w', 'best', '--retry-streams', '5', '--retry-max', '5']
+
+
