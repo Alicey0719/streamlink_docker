@@ -21,7 +21,7 @@ WORK_DIR=$(mktemp -d "${OUTPUT_DIR}/tmp_XXXXXX")
 OUTPUT_FILE="${WORK_DIR}/{author}_{title}_{time:%Y%m%d_%H%M%S}.ts"
 
 # 残りの引数を取得（--retry-streamsなどのオプション）
-shift 2
+shift 2 || shift $#
 STREAMLINK_LOG=$(mktemp)
 set +e
 streamlink "$URL" "$QUALITY" -o "$OUTPUT_FILE" "$@" 2>&1 | tee "$STREAMLINK_LOG"
@@ -55,6 +55,7 @@ BASENAME="${LATEST_TS%.ts}"
 OUTPUT_PATH="${OUTPUT_DIR}/$(basename "$BASENAME").${OUTPUT_FORMAT}"
 
 # ffmpegで変換 or move
+set +e
 if [ "$OUTPUT_FORMAT" = "ts" ]; then
     mv "$LATEST_TS" "$OUTPUT_PATH"
 elif [ "$OUTPUT_FORMAT" = "webm" ]; then
@@ -62,8 +63,10 @@ elif [ "$OUTPUT_FORMAT" = "webm" ]; then
 else
     ffmpeg -i "$LATEST_TS" -c:v copy -c:a copy "$OUTPUT_PATH"
 fi
+CONVERSION_EXIT_CODE=$?
+set -e
 
-if [ $? -eq 0 ]; then
+if [ $CONVERSION_EXIT_CODE -eq 0 ]; then
     echo "Output: $OUTPUT_PATH"
     rm -rf "$WORK_DIR"
 else
