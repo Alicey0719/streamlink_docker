@@ -1,4 +1,4 @@
-FROM python:3.14.2
+FROM python:3.14.3
 
 ENV TZ=Asia/Tokyo
 ENV PYTHONUNBUFFERED=1
